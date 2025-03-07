@@ -16,6 +16,7 @@ public class Nvidium {
     public static boolean IS_DEBUG = System.getProperty("nvidium.isDebug", "false").equals("TRUE");
     public static boolean SUPPORTS_PERSISTENT_SPARSE_ADDRESSABLE_BUFFER = true;
     public static boolean FORCE_DISABLE = false;
+    public static boolean FORCE_COMPATIBILITY = Boolean.parseBoolean(System.getProperty("nvidium.all-hell-breaks-loose", "false"));
 
     public static NvidiumConfig config = NvidiumConfig.loadOrCreate();
 
@@ -39,6 +40,10 @@ public class Nvidium {
             LOGGER.info("All capabilities met");
         } else {
             LOGGER.warn("Not all requirements met, disabling nvidium");
+            if (FORCE_COMPATIBILITY) {
+                LOGGER.warn("Or maybe not, all hell breaks loose !");
+                IS_COMPATIBLE = true;
+            }
         }
         if (IS_COMPATIBLE && Util.getOperatingSystem() == Util.OperatingSystem.LINUX) {
             LOGGER.warn("Linux currently uses fallback terrain buffer due to driver inconsistencies, expect increase vram usage");
